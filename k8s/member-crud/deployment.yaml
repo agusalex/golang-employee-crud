@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: golang-employee-crud-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: golang-employee-crud
+  template:
+    metadata:
+      labels:
+        app: golang-employee-crud
+    spec:
+      containers:
+        - name: golang-employee-crud
+          image: gcr.io/superb-firefly-387317/golang-employee-crud #If deploying to GCP
+          #image: registry.gitlab.com/codelittinc/golang-interview-project-agustin-alexander:golang-employee-crud # If using gitlab registry
+          env:
+            - name: DB_HOST
+              value: mysql-service
+            - name: DB_USER
+              value: root
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
+            - name: DB_NAME
+              value: "mydbname"
+            - name: SERVER_PORT
+              value: "8080"
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /api/ping
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+      imagePullSecrets:
+        - name: gitlab-registry

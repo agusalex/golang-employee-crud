@@ -1,0 +1,334 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Member-Crud",
+    "version": "1.0",
+    "contact": {}
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "description": "Checks the health status of the server and database connection",
+        "produces": [
+          "text/plain"
+        ],
+        "tags": [
+          "health"
+        ],
+        "summary": "Health endpoint",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "500": {
+            "description": "Could not establish a connection to the database",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/members": {
+      "get": {
+        "description": "Get all members with tags",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "members"
+        ],
+        "summary": "Get all members with tags",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/models.Member"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "description": "Add a new member",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "members"
+        ],
+        "summary": "Add a new member",
+        "parameters": [
+          {
+            "description": "Member object that needs to be added",
+            "name": "member",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/models.Member"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/models.Member"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/members/{id}": {
+      "get": {
+        "description": "Get a member by ID with tags",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "members"
+        ],
+        "summary": "Get a member by ID with tags",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Member ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/models.Member"
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete a member by ID",
+        "tags": [
+          "members"
+        ],
+        "summary": "Delete a member",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Member ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member deleted successfully",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Update a member by ID",
+        "tags": [
+          "members"
+        ],
+        "summary": "Update a member",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Member ID",
+            "name": "id",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Member object that needs to be added",
+            "name": "member",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/models.Member"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member updated successfully",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/members/search": {
+      "get": {
+        "description": "Search members",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "members"
+        ],
+        "summary": "Search members",
+        "parameters": [
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi",
+            "description": "Tags to search for",
+            "name": "tags",
+            "in": "query",
+            "required": false
+          },
+          {
+            "type": "string",
+            "description": "Member type to search for",
+            "name": "type",
+            "in": "query",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/models.Member"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/ping": {
+      "get": {
+        "description": "Checks the availability of the server",
+        "produces": [
+          "text/plain"
+        ],
+        "tags": [
+          "ping"
+        ],
+        "summary": "Ping endpoint",
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tags": {
+      "get": {
+        "description": "Gets all tags",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "tags"
+        ],
+        "summary": "Get all tags",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/models.Tag"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "models.Member": {
+      "type": "object",
+      "required": [
+        "name",
+        "type"
+      ],
+      "properties": {
+        "contractDuration": {
+          "type": "integer"
+        },
+        "createdAt": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/models.Tag"
+          }
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "EMPLOYEE",
+            "CONTRACTOR"
+          ]
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      }
+    },
+    "models.Tag": {
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "type": "string"
+        },
+        "deletedAt": {
+          "type": "string"
+        },
+        "id": {
+          "type": "integer"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/models.Member"
+          }
+        },
+        "name": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

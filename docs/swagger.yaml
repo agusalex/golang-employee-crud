@@ -1,0 +1,233 @@
+swagger: "2.0"
+info:
+  title: "Member-Crud"
+  version: "1.0"
+  contact: {}
+
+definitions:
+  models.Member:
+    properties:
+      contractDuration:
+        type: integer
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      role:
+        type: string
+      tags:
+        items:
+          $ref: '#/definitions/models.Tag'
+        type: array
+      type:
+        enum:
+          - EMPLOYEE
+          - CONTRACTOR
+        type: string
+      updatedAt:
+        type: string
+    required:
+      - name
+      - type
+    type: object
+
+  models.Tag:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      id:
+        type: integer
+      members:
+        items:
+          $ref: '#/definitions/models.Member'
+        type: array
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+
+paths:
+  /api/health:
+    get:
+      description: Checks the health status of the server and database connection
+      produces:
+        - text/plain
+      responses:
+        "200":
+          description: Ok
+          schema:
+            type: string
+        "500":
+          description: Could not establish a connection to the database
+          schema:
+            type: string
+      summary: Health endpoint
+      tags:
+        - health
+
+  /api/v1/members:
+    get:
+      description: Get all members with tags
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Member'
+            type: array
+      summary: Get all members with tags
+      tags:
+        - members
+
+    post:
+      consumes:
+        - application/json
+      description: Add a new member
+      parameters:
+        - description: Member object that needs to be added
+          in: body
+          name: member
+          required: true
+          schema:
+            $ref: '#/definitions/models.Member'
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Member'
+      summary: Add a new member
+      tags:
+        - members
+
+  /api/v1/members/{id}:
+    get:
+      description: Get a member by ID with tags
+      parameters:
+        - description: Member ID
+          in: path
+          name: id
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Member'
+      summary: Get a member by ID with tags
+      tags:
+        - members
+
+    delete:
+      description: Delete a member by ID
+      parameters:
+        - description: Member ID
+          in: path
+          name: id
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Member deleted successfully
+          schema:
+            type: string
+      summary: Delete a member
+      tags:
+        - members
+
+    put:
+      description: Update a member by ID
+      parameters:
+        - description: Member ID
+          in: path
+          name: id
+          required: true
+          type: string
+        - description: Member object that needs to be added
+          in: body
+          name: member
+          required: true
+          schema:
+            $ref: '#/definitions/models.Member'
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Member updated successfully
+          schema:
+            type: string
+      summary: Update a member
+      tags:
+        - members
+
+  /api/v1/members/search:
+    get:
+      description: Search members
+      produces:
+        - application/json
+      tags:
+        - members
+      summary: Search members
+      parameters:
+        - type: array
+          items:
+            type: string
+          collectionFormat: multi
+          description: Tags to search for
+          name: tags
+          in: query
+          required: false
+        - type: string
+          description: Member type to search for
+          name: type
+          in: query
+          required: false
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/models.Member'
+
+  /api/ping:
+    get:
+      description: Checks the availability of the server
+      produces:
+        - text/plain
+      responses:
+        "200":
+          description: Ok
+          schema:
+            type: string
+      summary: Ping endpoint
+      tags:
+        - ping
+
+  /api/v1/tags:
+    get:
+      description: Gets all tags
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/models.Tag'
+      summary: Get all tags
+      tags:
+        - tags

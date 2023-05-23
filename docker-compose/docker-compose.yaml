@@ -1,0 +1,34 @@
+version: '3'
+services:
+  mysql:
+    image: mysql
+    container_name: some-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - MYSQL_DATABASE=mydbname
+      - MYSQL_PORT=3306
+    ports:
+      - '3306:3306'
+    networks:
+      - my-network
+
+  member-crud-service:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASS=my-secret-pw
+      - DB_NAME=mydbname
+      - SERVER_PORT=8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    restart: unless-stopped
+    networks:
+      - my-network
+
+networks:
+  my-network:
